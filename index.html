@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>REST || WebSockets: some solutions</title>
+
+    <meta name="description" content="REST || WebSocket: some solutions">
+    <meta name="author" content="Carlo Perassi">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black_mod.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <div class="slides">
+        <section>
+            <h1>
+                REST || WebSockets<br/>
+                <span class="fragment">some solutions</span>
+            </h1>
+
+            <h2 class="fragment"><a href="https://torinojs.github.io/">TorinoJS</a></h2>
+
+            <p class="fragment">
+                <small>Carlo Perassi / (2016-03-11)</small>
+            </p>
+        </section>
+
+        <section>
+            <h2>The usual self introduction</h2>
+
+            <ul>
+                <li class="fragment">1996 - 2016</li>
+                <li class="fragment"><a href="http://carlo.perassi.com">carlo.perassi.com</a></li>
+                <li class="fragment">2015 <a href="http://www.foit.it">FOIT</a> &#x201C;Javascript Full Stack&#x201D;
+                    <span class="fragment">(First?)</span>
+                </li>
+                <li class="fragment">
+                    carlo.perassi {<span class="fragment">gmail.com</span>, <a class="fragment" href="http://kiwifarm.it">kiwifarm.it</a>}
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>The eternal question</h2>
+
+            <p class="fragment">
+                I have to design &amp; develop a new {web}app{lication}:<br/>
+                <span class="fragment">what is the best blueprint/boileplate/stub to start from?</span>
+            </p>
+        </section>
+
+        <section>
+            <h2>The problem</h2>
+        </section>
+
+        <section>
+            <h2>A few steps through the last twenty years</h2>
+
+            <h3 class="fragment">AKA First dimension of the problem</h3>
+
+            <ul>
+                <li class="fragment">scratch/cookies</li>
+                <li class="fragment">CMSes</li>
+                <li class="fragment">REST APIs</li>
+                <li class="fragment">WebSockets</li>
+                <li class="fragment">Microservices</li>
+            </ul>
+
+            <p class="fragment">A list that might explain the &#x201C;OR&#x201D; in the presentation.</p>
+        </section>
+
+        <section>
+            <h2>The Holy Grail</h2>
+
+            <h3 class="fragment">AKA Second dimension of the problem</h3>
+            <h4 class="fragment">AKA The modern version of a very old list</h4>
+
+            <ul>
+                <li class="fragment">Standard protocols</li>
+                <li class="fragment">Free Software</li>
+                <li class="fragment">Production ready</li>
+                <li class="fragment">JavaScript (Full Stack)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>The Holy Grail</h2>
+
+            <h3 class="fragment">(continued)</h3>
+
+            <ul>
+                <li class="fragment">Authentication (standard too)</li>
+                <li class="fragment">
+                    Authorization / ACL (ORM or even more abstract)
+                    <ul>
+                        <li class="fragment">Federation ready?</li>
+                    </ul>
+                </li>
+                <li class="fragment">CRUD(SP) (REST-like)</li>
+                <li class="fragment">IMFV (input mapping, filtering and validating)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>The Holy Grail</h2>
+
+            <h3 class="fragment">The key point is&hellip;</h3>
+
+            <p class="fragment">&#x201C;Let me concentrate on the Business Logic&#x201D;</p>
+        </section>
+
+        <section>
+            <p>The Holy Grail doesn't exist.</p>
+
+            <p class="fragment">It doesn't exist such a &#x201C;headless CMS-like&#x201D; as well&hellip;</span><br/>
+                <span class="fragment">but, AFAIK, there are a few interesting partial solutions&hellip;</span><br/>
+                <span class="fragment">and a couple of &#x201C;Northern Star&#x201D; candidates&hellip;</span><br/>
+                <span class="fragment">to compose your own decision matrix.</span>
+            </p>
+        </section>
+
+        <section>
+            <h2>Partial solutions</h2>
+        </section>
+
+        <section>
+            <h2>REST</h2>
+
+            <ul>
+                <li class="fragment">
+                    <a href="http://www.soajs.org/">SOAJS</a> (more later)<br/>
+                    <span class="fragment">very nice but &#x201C;only&#x201D; REST</span>
+                </li>
+                <li class="fragment">
+                    <a href="https://strongloop.com/">StrongLoop</a><br/>
+                    <span class="fragment">great but the most useful services are not for free</span>
+                </li>
+                <li class="fragment">
+                    <a href="https://getkong.org/">Kong</a> (more later)<br/>
+                    <span class="fragment">great in general and even more for your &#x201C;legacy&#x201D; APIs</span>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>
+                Websockets<br/>
+                <span class="fragment">(or the like)</span>
+            </h2>
+
+            <h3 class="fragment">(Part 1: PAAS)</h3>
+
+            <p class="fragment">They are services, not {free} software (lock-in)</p>
+
+            <p class="fragment">Faster / Expensive (it depends...)</p>
+
+            <ul>
+                <li class="fragment">
+                    AWS <a href="https://aws.amazon.com/lambda/">(Lambda)</a> etc
+                    <ul>
+                        <li class="fragment">special mention (to try yet):
+                            <a href="http://www.serverless.com">serverless</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="fragment">
+                    <a href="http://heroku.com/">Heroku</a> + <a href="http://parse.com">Parse</a> (recently opened)
+                </li>
+                <li class="fragment">
+                    Heroku + <a href="https://pusher.com/">Pusher</a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>
+                Websockets<br/>
+                <span class="fragment">(or the like)</span>
+            </h2>
+
+            <h3 class="fragment">(Part 2.1: Free Software)</h3>
+
+            <ul>
+                <li class="fragment">
+                    <a href="http://crossbar.io/">Crossbar.io</a><br/>
+                    <span class="fragment">very good and complete (from protocol to application), IoT oriented but not
+                        so followed and without a standard authentication</span>
+                </li>
+                <li class="fragment">
+                    <a href="http://socketcluster.io/">SocketCluster</a><br/>
+                    <span class="fragment">stunning, standard and flexible but with an &#x201C;interesting&#x201D;
+                        protocol</span>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>
+                Websockets<br/>
+                <span class="fragment">(or the like)</span>
+            </h2>
+
+            <h3 class="fragment">(Part 2.2: Free Software)</h3>
+
+            <ul>
+                <li class="fragment">
+                    <a href="https://www.meteor.com/">Meteor</a><br/>
+                    <span class="fragment">another top choice (drawbacks: indep. DDP client, MySQL etc)</span>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>
+                Websockets<br/>
+                <span class="fragment">(or the like)</span>
+            </h2>
+
+            <h3 class="fragment">(Part 2.3: Free Software)</h3>
+
+            <ul>
+                <li class="fragment">
+                    <a href="http://pushpin.org/">Pushpin</a> (more later, maybe)<br/>
+                    <span class="fragment">HTTP/WebSocket reverse proxy (ideas for an architecture/demo)</span>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <pre>
+                <code class="hljs" data-trim contenteditable>
+module.exports = {
+    serviceName: "helloworld",
+    servicePort: 4020,
+    extKeyRequired: false,
+    "errors": {},
+    "schema": {
+        "/hello": {
+            "_apiInfo": {
+            "l": "hello world"
+            },
+            "firstName": {
+                "source": ['query.firstName'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "format": "alpha"
+                }
+            },
+            "lastName": {
+                "source": ['query.lastName'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+};
+                    </code>
+                </pre>
+        </section>
+
+        <section>
+            <pre>
+                <code class="hljs" data-trim contenteditable>
+'use strict';
+var soajs = require('soajs');
+var config = require('./config.js');
+var service = new soajs.server.service({"config": config});
+service.init(function () {
+    service.get("/hello", function (req, res) {
+        var name = req.soajs.inputmaskData.firstName + " " + req.soajs.inputmaskData.lastName;
+        res.json(req.soajs.buildResponse(null, "Hello " + name));
+    });
+    service.start();
+});
+                </code>
+            </pre>
+        </section>
+
+        <section>
+            <h2>
+                Extras, future (who knows)<br/>
+                <span class="fragment">microservices and so on</span>
+            </h2>
+
+            <ul>
+                <li class="fragment">
+                    <a href="http://senecajs.org/">Seneca</a><br/>
+                    <span class="fragment">a microservices toolkit for Node.js</span>
+                </li>
+                <li class="fragment">
+                    <a href="http://jolie-lang.org/">Jolie</a><br/>
+                    <span class="fragment">the first language for microservices</span>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="fragment">Before a short demo&hellip;</h2>
+
+            <ul>
+                <li class="fragment">Thanks!</li>
+                <li class="fragment"><a href="https://github.com/carlok">github.com/carlok</a></li>
+                <li class="fragment">Q&A <span class="fragment">(later)</span></li>
+            </ul>
+        </section>
+
+    </div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // Hides the address bar on mobile devices
+        hideAddressBar: true,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Parallax background image
+        parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+        // Parallax background size
+        parallaxBackgroundSize: '', // CSS syntax, e.g. "2100px 900px"
+
+        // Number of pixels to move the parallax background per slide
+        // - Calculated automatically unless specified
+        // - Set to 0 to disable movement along an axis
+        parallaxBackgroundHorizontal: null,
+        parallaxBackgroundVertical: null,
+
+        dependencies: [
+            {
+                src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            }
+            },
+            {
+                src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            },
+            {src: 'plugin/zoom-js/zoom.js', async: true},
+            {src: 'plugin/notes/notes.js', async: true}
+        ]
+    });
+</script>
+</body>
+</html>
